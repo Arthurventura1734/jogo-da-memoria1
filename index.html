@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Memória da Saúde</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topo">
+    <div class="marca">🩺 Memória da Saúde</div>
+    <p>Aprenda brincando: combine as doenças com suas informações!</p>
+  </header>
+
+  <main class="container">
+    <section class="intro">
+      <span class="etiqueta">JOGO EDUCATIVO • BIOLOGIA</span>
+      <h1>Desafio da memória</h1>
+      <p>Encontre os pares relacionados à hipertensão, hipotensão, colesterol alto e diabetes.</p>
+    </section>
+
+    <section class="painel" aria-label="Informações da partida">
+      <div class="estatistica"><span>Movimentos</span><strong id="movimentos">0</strong></div>
+      <div class="estatistica"><span>Pares encontrados</span><strong id="pares">0/6</strong></div>
+      <button id="reiniciar" class="botao-secundario">↻ Reiniciar</button>
+    </section>
+
+    <div id="mensagem" class="mensagem" role="status">Escolha duas cartas para começar!</div>
+    <section id="tabuleiro" class="tabuleiro" aria-label="Cartas do jogo"></section>
+
+    <aside class="aviso">
+      <strong>Importante:</strong> este jogo é educativo e não substitui avaliação médica. Medicamentos e tratamentos devem ser orientados por profissionais de saúde.
+    </aside>
+  </main>
+
+  <footer>Trabalho de Biologia • Doenças comuns no Brasil</footer>
+  <script>
+    const paresDeCartas = [
+      { id: 1, titulo: "Hipertensão", detalhe: "Pressão arterial elevada.", emoji: "❤️" },
+      { id: 2, titulo: "Hipotensão", detalhe: "Pressão arterial abaixo do normal.", emoji: "🩸" },
+      { id: 3, titulo: "Colesterol alto", detalhe: "Pode aumentar o risco de doenças cardiovasculares.", emoji: "🫀" },
+      { id: 4, titulo: "Diabetes", detalhe: "Afeta a forma como o corpo controla a glicose no sangue.", emoji: "🩸" },
+      { id: 5, titulo: "Prevenção", detalhe: "Alimentação equilibrada, atividade física e acompanhamento de saúde.", emoji: "🥗" },
+      { id: 6, titulo: "Tratamento", detalhe: "Depende da condição e da avaliação profissional.", emoji: "🩺" }
+    ];
+
+    const tabuleiro = document.querySelector("#tabuleiro");
+    const movimentosEl = document.querySelector("#movimentos");
+    const paresEl = document.querySelector("#pares");
+    const mensagem = document.querySelector("#mensagem");
+    const reiniciar = document.querySelector("#reiniciar");
+    let primeira = null, bloqueado = false, movimentos = 0, encontrados = 0;
+
+    function embaralhar(lista) {
+      return [...lista].sort(() => Math.random() - 0.5);
+    }
+
+    function iniciarJogo() {
+      tabuleiro.innerHTML = "";
+      primeira = null;
+      bloqueado = false;
+      movimentos = 0;
+      encontrados = 0;
+      atualizarPainel();
+      mensagem.textContent = "Escolha duas cartas para começar!";
+      mensagem.classList.remove("sucesso");
+
+      const cartas = embaralhar(paresDeCartas.flatMap(par => [
+        { id: par.id, tipo: "nome", texto: par.titulo, emoji: par.emoji },
+        { id: par.id, tipo: "detalhe", texto: par.detalhe, emoji: "🔎" }
+      ]));
+
+      cartas.forEach((carta, indice) => {
+        const botao = document.createElement("button");
+        botao.className = "carta";
+        botao.type = "button";
+        botao.dataset.id = carta.id;
+        botao.dataset.indice = indice;
+        botao.setAttribute("aria-label", "Carta virada para baixo");
+        botao.innerHTML = `<span class="verso"><span class="interrogacao">?</span><small>MEMÓRIA</small></span>
+          <span class="frente"><span class="emoji">${carta.emoji}</span><strong>${carta.texto}</strong></span>`;
+        botao.addEventListener("click", () => virarCarta(botao, carta));
+        tabuleiro.appendChild(botao);
+      });
+    }
+
+    function virarCarta(botao, carta) {
+      if (bloqueado || botao.classList.contains("revelada") || botao.classList.contains("combinada")) return;
+      botao.classList.add("revelada");
+      botao.setAttribute("aria-label", carta.texto);
+
+      if (!primeira) {
+        primeira = { botao, carta };
+        return;
+      }
+
+      movimentos++;
+      atualizarPainel();
+
+      if (primeira.carta.id === carta.id && primeira.carta.tipo !== carta.tipo) {
+        primeira.botao.classList.add("combinada");
+        botao.classList.add("combinada");
+        primeira.botao.setAttribute("disabled", "");
+        botao.setAttribute("disabled", "");
+        encontrados++;
+        primeira = null;
+        atualizarPainel();
+
+        if (encontrados === paresDeCartas.length) {
+          mensagem.textContent = `Parabéns! Você encontrou todos os pares em ${movimentos} movimentos!`;
+          mensagem.classList.add("sucesso");
+        } else {
+          mensagem.textContent = "Muito bem! Você encontrou um par.";
+        }
+      } else {
+        bloqueado = true;
+        mensagem.textContent = "Não combinou. Tente novamente!";
+        const anterior = primeira;
+        primeira = null;
+        setTimeout(() => {
+          anterior.botao.classList.remove("revelada");
+          botao.classList.remove("revelada");
+          anterior.botao.setAttribute("aria-label", "Carta virada para baixo");
+          botao.setAttribute("aria-label", "Carta virada para baixo");
+          bloqueado = false;
+        }, 900);
+      }
+    }
+
+    function atualizarPainel() {
+      movimentosEl.textContent = movimentos;
+      paresEl.textContent = `${encontrados}/${paresDeCartas.length}`;
+    }
+
+    reiniciar.addEventListener("click", iniciarJogo);
+    iniciarJogo();
+  </script>
+</body>
+</html>
