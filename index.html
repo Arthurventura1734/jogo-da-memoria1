@@ -1,11 +1,253 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Memória da Saúde</title>
-  <link rel="stylesheet" href="style.css">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f0f7f6;
+      color: #243b3b;
+    }
+
+    .topo {
+      background: #087f8c;
+      color: white;
+      text-align: center;
+      padding: 28px 16px;
+    }
+
+    .marca {
+      font-size: 26px;
+      font-weight: bold;
+    }
+
+    .topo p {
+      margin-bottom: 0;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 0 16px;
+    }
+
+    .intro {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .etiqueta {
+      display: inline-block;
+      background: #d5f3ed;
+      color: #087f8c;
+      padding: 7px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+      color: #075b63;
+    }
+
+    .painel {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      background: white;
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: 0 3px 12px #0000000d;
+    }
+
+    .estatistica {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .estatistica span {
+      font-size: 13px;
+      color: #607575;
+    }
+
+    .estatistica strong {
+      font-size: 25px;
+      color: #087f8c;
+    }
+
+    button {
+      font-family: inherit;
+    }
+
+    .botao-secundario {
+      background: #087f8c;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 11px 16px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .botao-secundario:hover {
+      background: #06646e;
+    }
+
+    .mensagem {
+      text-align: center;
+      margin: 20px 0;
+      padding: 14px;
+      background: #e0f2f1;
+      border-radius: 10px;
+      font-weight: bold;
+    }
+
+    .mensagem.sucesso {
+      background: #d8f5df;
+      color: #176b32;
+    }
+
+    .tabuleiro {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .carta {
+      position: relative;
+      min-height: 125px;
+      padding: 12px;
+      border: 2px solid #087f8c;
+      border-radius: 12px;
+      background: #087f8c;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      overflow-wrap: anywhere;
+      transition: transform 0.2s, background 0.2s;
+    }
+
+    .carta:hover:not(.combinada) {
+      transform: translateY(-3px);
+    }
+
+    .verso {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .interrogacao {
+      font-size: 36px;
+      font-weight: bold;
+    }
+
+    .verso small {
+      font-size: 11px;
+      letter-spacing: 2px;
+    }
+
+    .frente {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: #075b63;
+    }
+
+    .emoji {
+      font-size: 27px;
+    }
+
+    .frente strong {
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .carta.revelada,
+    .carta.combinada {
+      background: white;
+      border-color: #36a69b;
+      color: #075b63;
+      cursor: default;
+    }
+
+    .carta.revelada .verso,
+    .carta.combinada .verso {
+      display: none;
+    }
+
+    .carta.revelada .frente,
+    .carta.combinada .frente {
+      display: flex;
+    }
+
+    .carta.combinada {
+      background: #d8f5df;
+      border-color: #49a66d;
+    }
+
+    .aviso {
+      margin-top: 25px;
+      padding: 16px;
+      background: #fff4d7;
+      border-left: 4px solid #e6ad32;
+      border-radius: 8px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    footer {
+      text-align: center;
+      padding: 24px 12px;
+      color: #607575;
+      font-size: 13px;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        margin-top: 20px;
+      }
+
+      .tabuleiro {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .carta {
+        min-height: 120px;
+        padding: 10px;
+      }
+
+      .marca {
+        font-size: 22px;
+      }
+
+      .painel {
+        gap: 18px;
+      }
+    }
+  </style>
 </head>
+
 <body>
   <header class="topo">
     <div class="marca">🩺 Memória da Saúde</div>
@@ -16,32 +258,100 @@
     <section class="intro">
       <span class="etiqueta">JOGO EDUCATIVO • BIOLOGIA</span>
       <h1>Desafio da memória</h1>
-      <p>Encontre os pares relacionados à hipertensão, hipotensão, colesterol alto e diabetes.</p>
+      <p>
+        Encontre os pares relacionados à hipertensão, hipotensão,
+        colesterol alto, diabetes e outras condições de saúde.
+      </p>
     </section>
 
     <section class="painel" aria-label="Informações da partida">
-      <div class="estatistica"><span>Movimentos</span><strong id="movimentos">0</strong></div>
-      <div class="estatistica"><span>Pares encontrados</span><strong id="pares">0/6</strong></div>
-      <button id="reiniciar" class="botao-secundario">↻ Reiniciar</button>
+      <div class="estatistica">
+        <span>Movimentos</span>
+        <strong id="movimentos">0</strong>
+      </div>
+
+      <div class="estatistica">
+        <span>Pares encontrados</span>
+        <strong id="pares">0/8</strong>
+      </div>
+
+      <button id="reiniciar" class="botao-secundario" type="button">
+        ↻ Reiniciar
+      </button>
     </section>
 
-    <div id="mensagem" class="mensagem" role="status">Escolha duas cartas para começar!</div>
-    <section id="tabuleiro" class="tabuleiro" aria-label="Cartas do jogo"></section>
+    <div id="mensagem" class="mensagem" role="status" aria-live="polite">
+      Escolha duas cartas para começar!
+    </div>
+
+    <section
+      id="tabuleiro"
+      class="tabuleiro"
+      aria-label="Cartas do jogo">
+    </section>
 
     <aside class="aviso">
-      <strong>Importante:</strong> este jogo é educativo e não substitui avaliação médica. Medicamentos e tratamentos devem ser orientados por profissionais de saúde.
+      <strong>Importante:</strong>
+      este jogo é educativo e não substitui avaliação médica.
+      Medicamentos e tratamentos devem ser orientados por profissionais
+      de saúde.
     </aside>
   </main>
 
-  <footer>Trabalho de Biologia • Doenças comuns no Brasil</footer>
+  <footer>
+    Trabalho de Biologia • Doenças comuns no Brasil
+  </footer>
+
   <script>
     const paresDeCartas = [
-      { id: 1, titulo: "Hipertensão", detalhe: "Pressão arterial elevada.", emoji: "❤️" },
-      { id: 2, titulo: "Hipotensão", detalhe: "Pressão arterial abaixo do normal.", emoji: "🩸" },
-      { id: 3, titulo: "Colesterol alto", detalhe: "Pode aumentar o risco de doenças cardiovasculares.", emoji: "🫀" },
-      { id: 4, titulo: "Diabetes", detalhe: "Afeta a forma como o corpo controla a glicose no sangue.", emoji: "🩸" },
-      { id: 5, titulo: "Prevenção", detalhe: "Alimentação equilibrada, atividade física e acompanhamento de saúde.", emoji: "🥗" },
-      { id: 6, titulo: "Tratamento", detalhe: "Depende da condição e da avaliação profissional.", emoji: "🩺" }
+      {
+        id: 1,
+        titulo: "Hipertensão",
+        detalhe: "Pressão arterial elevada.",
+        emoji: "❤️"
+      },
+      {
+        id: 2,
+        titulo: "Hipotensão",
+        detalhe: "Pressão arterial abaixo do normal.",
+        emoji: "🩸"
+      },
+      {
+        id: 3,
+        titulo: "Colesterol alto",
+        detalhe: "Pode aumentar o risco de doenças cardiovasculares.",
+        emoji: "🫀"
+      },
+      {
+        id: 4,
+        titulo: "Diabetes",
+        detalhe: "Afeta a forma como o corpo controla a glicose no sangue.",
+        emoji: "🩸"
+      },
+      {
+        id: 5,
+        titulo: "Prevenção",
+        detalhe: "Alimentação equilibrada, atividade física e acompanhamento de saúde.",
+        emoji: "🥗"
+      },
+      {
+        id: 6,
+        titulo: "Tratamento",
+        detalhe: "Depende da condição e da avaliação profissional.",
+        emoji: "🩺"
+      },
+      {
+        id: 7,
+        titulo: "Obesidade",
+        detalhe: "Condição complexa que pode aumentar o risco de outros problemas de saúde.",
+        emoji: "⚖️"
+      },
+      {
+        id: 8,
+        titulo: "Anemia",
+        detalhe: "Condição caracterizada pela redução da hemoglobina no sangue.",
+        emoji: "🩸"
+      }
     ];
 
     const tabuleiro = document.querySelector("#tabuleiro");
@@ -49,43 +359,109 @@
     const paresEl = document.querySelector("#pares");
     const mensagem = document.querySelector("#mensagem");
     const reiniciar = document.querySelector("#reiniciar");
-    let primeira = null, bloqueado = false, movimentos = 0, encontrados = 0;
+
+    let primeira = null;
+    let bloqueado = false;
+    let movimentos = 0;
+    let encontrados = 0;
+    let temporizador = null;
 
     function embaralhar(lista) {
-      return [...lista].sort(() => Math.random() - 0.5);
+      const resultado = [...lista];
+
+      for (let i = resultado.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [resultado[i], resultado[j]] = [resultado[j], resultado[i]];
+      }
+
+      return resultado;
     }
 
     function iniciarJogo() {
+      if (temporizador !== null) {
+        clearTimeout(temporizador);
+        temporizador = null;
+      }
+
       tabuleiro.innerHTML = "";
       primeira = null;
       bloqueado = false;
       movimentos = 0;
       encontrados = 0;
+
       atualizarPainel();
+
       mensagem.textContent = "Escolha duas cartas para começar!";
       mensagem.classList.remove("sucesso");
 
-      const cartas = embaralhar(paresDeCartas.flatMap(par => [
-        { id: par.id, tipo: "nome", texto: par.titulo, emoji: par.emoji },
-        { id: par.id, tipo: "detalhe", texto: par.detalhe, emoji: "🔎" }
-      ]));
+      const cartas = embaralhar(
+        paresDeCartas.flatMap(par => [
+          {
+            id: par.id,
+            tipo: "nome",
+            texto: par.titulo,
+            emoji: par.emoji
+          },
+          {
+            id: par.id,
+            tipo: "detalhe",
+            texto: par.detalhe,
+            emoji: "🔎"
+          }
+        ])
+      );
 
       cartas.forEach((carta, indice) => {
         const botao = document.createElement("button");
+
         botao.className = "carta";
         botao.type = "button";
         botao.dataset.id = carta.id;
         botao.dataset.indice = indice;
         botao.setAttribute("aria-label", "Carta virada para baixo");
-        botao.innerHTML = `<span class="verso"><span class="interrogacao">?</span><small>MEMÓRIA</small></span>
-          <span class="frente"><span class="emoji">${carta.emoji}</span><strong>${carta.texto}</strong></span>`;
-        botao.addEventListener("click", () => virarCarta(botao, carta));
+
+        const verso = document.createElement("span");
+        verso.className = "verso";
+
+        const interrogacao = document.createElement("span");
+        interrogacao.className = "interrogacao";
+        interrogacao.textContent = "?";
+
+        const nomeVerso = document.createElement("small");
+        nomeVerso.textContent = "MEMÓRIA";
+
+        verso.append(interrogacao, nomeVerso);
+
+        const frente = document.createElement("span");
+        frente.className = "frente";
+
+        const emoji = document.createElement("span");
+        emoji.className = "emoji";
+        emoji.textContent = carta.emoji;
+
+        const texto = document.createElement("strong");
+        texto.textContent = carta.texto;
+
+        frente.append(emoji, texto);
+        botao.append(verso, frente);
+
+        botao.addEventListener("click", () => {
+          virarCarta(botao, carta);
+        });
+
         tabuleiro.appendChild(botao);
       });
     }
 
     function virarCarta(botao, carta) {
-      if (bloqueado || botao.classList.contains("revelada") || botao.classList.contains("combinada")) return;
+      if (
+        bloqueado ||
+        botao.classList.contains("revelada") ||
+        botao.classList.contains("combinada")
+      ) {
+        return;
+      }
+
       botao.classList.add("revelada");
       botao.setAttribute("aria-label", carta.texto);
 
@@ -97,17 +473,25 @@
       movimentos++;
       atualizarPainel();
 
-      if (primeira.carta.id === carta.id && primeira.carta.tipo !== carta.tipo) {
+      if (
+        primeira.carta.id === carta.id &&
+        primeira.carta.tipo !== carta.tipo
+      ) {
         primeira.botao.classList.add("combinada");
         botao.classList.add("combinada");
-        primeira.botao.setAttribute("disabled", "");
-        botao.setAttribute("disabled", "");
+
+        primeira.botao.disabled = true;
+        botao.disabled = true;
+
         encontrados++;
         primeira = null;
+
         atualizarPainel();
 
         if (encontrados === paresDeCartas.length) {
-          mensagem.textContent = `Parabéns! Você encontrou todos os pares em ${movimentos} movimentos!`;
+          mensagem.textContent =
+            `Parabéns! Você encontrou todos os pares em ${movimentos} movimentos!`;
+
           mensagem.classList.add("sucesso");
         } else {
           mensagem.textContent = "Muito bem! Você encontrou um par.";
@@ -115,24 +499,38 @@
       } else {
         bloqueado = true;
         mensagem.textContent = "Não combinou. Tente novamente!";
+
         const anterior = primeira;
         primeira = null;
-        setTimeout(() => {
+
+        temporizador = setTimeout(() => {
           anterior.botao.classList.remove("revelada");
           botao.classList.remove("revelada");
-          anterior.botao.setAttribute("aria-label", "Carta virada para baixo");
-          botao.setAttribute("aria-label", "Carta virada para baixo");
+
+          anterior.botao.setAttribute(
+            "aria-label",
+            "Carta virada para baixo"
+          );
+
+          botao.setAttribute(
+            "aria-label",
+            "Carta virada para baixo"
+          );
+
           bloqueado = false;
+          temporizador = null;
         }, 900);
       }
     }
 
     function atualizarPainel() {
       movimentosEl.textContent = movimentos;
-      paresEl.textContent = `${encontrados}/${paresDeCartas.length}`;
+      paresEl.textContent =
+        `${encontrados}/${paresDeCartas.length}`;
     }
 
     reiniciar.addEventListener("click", iniciarJogo);
+
     iniciarJogo();
   </script>
 </body>
